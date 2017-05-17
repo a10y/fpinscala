@@ -93,4 +93,22 @@ object List { // `List` companion object. Contains functions for creating and wo
 
   // Concatenate all lists into a single list
   def concat[A](ls: List[List[A]]): List[A] = foldRight(ls, Nil: List[A])((a, b) => append(a, b))
+
+  // Determine if the subsequence sub is contained in list sup.
+  // Not very efficient
+  def hasSubsequence[A](sup: List[A], sub: List[A]): Boolean = {
+    // Check if bs is at the head of as
+    @annotation.tailrec
+    def inner(as: List[A], bs: List[A]): Boolean = (as, bs) match {
+      case (_, Nil) => true
+      case (Nil, _) => false
+      case (Cons(x, xs), Cons(y, ys)) if x == y => inner(xs, ys)
+      case _ => false
+    }
+
+    sup match {
+      case Nil => sub == Nil
+      case Cons(x, xs) => inner(sup, sub) || hasSubsequence(xs, sub)
+    }
+  }
 }
